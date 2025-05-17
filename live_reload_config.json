@@ -1,0 +1,10 @@
+{
+    "server": {
+        "url": "http://localhost:8081",
+        "cleartext": true
+    },
+    "liveReload": {
+        "enabled": true,
+        "autopublish": true
+    }
+}

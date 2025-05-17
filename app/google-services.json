@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "539147308931",
+    "project_id": "fincasmart-f1011",
+    "storage_bucket": "fincasmart-f1011.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539147308931:android:de2f7f165298b501cc70b6",
+        "android_client_info": {
+          "package_name": "com.example.fincamanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "539147308931-87ikojnn10vlmhsv3unejdhaiup4spee.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fincamanager",
+            "certificate_hash": "30a79c555dab132353755af04bc02770f865dda0"
+          }
+        },
+        {
+          "client_id": "539147308931-s3a8h5vcegh8rn8mmnr998sfcl3f0me0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMcizKiP7c4MtIiTHfBp1Jz2FtEPb_Gas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "539147308931-s3a8h5vcegh8rn8mmnr998sfcl3f0me0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

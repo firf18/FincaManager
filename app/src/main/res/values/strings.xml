@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FincaManager</string>
+    <string name="app_title">Gestión Completa de Fincas</string>
+    
+    <!-- Firebase y autenticación -->
+    <string name="default_web_client_id" translatable="false">539147308931-g6e665lvn8m0954t4o8h0rmp5hi5q67k.apps.googleusercontent.com</string>
+    <string name="error_invalid_email">Formato de email inválido</string>
+    <string name="error_invalid_password">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_passwords_dont_match">Las contraseñas no coinciden</string>
+    <string name="google_signin">Iniciar sesión con Google</string>
+    <string name="apple_signin">Iniciar sesión con Apple</string>
+    <string name="signin_email">Iniciar sesión con Email</string>
+    <string name="signup_email">Registrarse con Email</string>
+    
+    <!-- Módulos principales -->
+    <string name="module_livestock">Ganado</string>
+    <string name="module_crops">Cultivos</string>
+    <string name="module_staff">Personal</string>
+    <string name="module_inventory">Inventario</string>
+    <string name="module_finances">Finanzas</string>
+    <string name="module_reports">Reportes</string>
+    <string name="module_settings">Configuración</string>
+    
+    <!-- Ganado -->
+    <string name="livestock_register">Registro de Animales</string>
+    <string name="livestock_inventory">Inventario de Ganado</string>
+    <string name="livestock_health">Salud Animal</string>
+    <string name="livestock_production">Producción</string>
+    
+    <!-- Cultivos -->
+    <string name="crops_register">Registro de Siembra</string>
+    <string name="crops_inventory">Inventario de Cultivos</string>
+    <string name="crops_harvest">Cosechas</string>
+    
+    <!-- Personal -->
+    <string name="staff_register">Registro de Personal</string>
+    <string name="staff_roles">Funciones y Permisos</string>
+    <string name="staff_tasks">Asignación de Tareas</string>
+    
+    <!-- Ajustes -->
+    <string name="settings_sync">Sincronización</string>
+    <string name="settings_user">Perfil de Usuario</string>
+    <string name="settings_farm">Datos de la Finca</string>
+
+    <!-- Acciones generales -->
+    <string name="action_save">Guardar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_add">Añadir</string>
+
+    <!-- Saludos según hora del día -->
+    <string name="greeting_morning">¡Buenos días!</string>
+    <string name="greeting_afternoon">¡Buenas tardes!</string>
+    <string name="greeting_evening">¡Buenas noches!</string>
+    
+    <!-- Autenticación -->
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="register_title">Registro</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="confirm_password_hint">Confirmar contraseña</string>
+    <string name="name_hint">Nombre</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="register_button">Registrarse</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="no_account">¿No tienes una cuenta?</string>
+    <string name="has_account">¿Ya tienes una cuenta?</string>
+    <string name="continue_with">O continúa con</string>
+    <string name="register_with">O regístrate con</string>
+    <string name="login_with_google">Iniciar sesión con Google</string>
+    <string name="register_with_google">Registrarse con Google</string>
+    <string name="app_slogan">Gestión inteligente para tu finca</string>
+    <string name="reset_password_title">Restablecer contraseña</string>
+    <string name="reset_password_message">Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</string>
+    <string name="send">Enviar</string>
+    <string name="cancel">Cancelar</string>
+</resources>
