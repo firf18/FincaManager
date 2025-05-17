@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import com.example.fincamanager.R
 import com.example.fincamanager.data.model.ganado.Animal
 import com.example.fincamanager.data.model.ganado.EstadoAnimal
+import com.example.fincamanager.navigation.GanadoRoutes
 import com.example.fincamanager.navigation.Routes
 import com.example.fincamanager.ui.ganado.GanadoViewModel
 import java.text.SimpleDateFormat
@@ -77,14 +78,16 @@ fun GanadoListaAnimalesScreen(
                 title = { Text(stringResource(R.string.module_livestock)) },
                 navigationIcon = {
                     IconButton(onClick = { 
-                        // Navegación segura: usar navigate con popUpTo
-                        navController.navigate(Routes.Ganado.route) {
-                            popUpTo(Routes.Ganado.route) { inclusive = false }
+                        // Navegación mejorada: volver al dashboard de ganado en lugar de la pantalla de especies
+                        navController.navigate(GanadoRoutes.DASHBOARD_GANADO) {
+                            // Limpiar todas las entradas hasta el dashboard
+                            popUpTo(GanadoRoutes.DASHBOARD_GANADO)
+                            launchSingleTop = true
                         }
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Regresar"
+                            contentDescription = "Regresar al dashboard"
                         )
                     }
                 }

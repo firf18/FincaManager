@@ -41,8 +41,14 @@ fun GanadoDashboardScreen(
                 title = { Text("Dashboard de Ganado") },
                 navigationIcon = {
                     IconButton(onClick = { 
+                        // Navegación mejorada: garantiza que volvamos al Home directamente
+                        // y limpia el backstack para evitar volver a selección de especies
                         navController.navigate(Routes.Home.route) {
-                            popUpTo(Routes.Home.route) { inclusive = false }
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
                     }) {
                         Icon(

@@ -45,6 +45,18 @@ fun SeleccionEspeciesScreen(
 ) {
     val especies by viewModel.especiesDisponibles.collectAsState()
     val especiesSeleccionadas by viewModel.especiesSeleccionadas.collectAsState()
+    
+    // Variable para determinar si venimos del dashboard o no
+    // Podríamos mejorarlo accediendo a la ruta anterior, pero esta es una solución simple
+    val mostrarDashboard = remember { mutableStateOf(false) }
+    
+    // Comprobamos las rutas previas para determinar de dónde venimos
+    LaunchedEffect(Unit) {
+        val prevBackStackEntry = navController.previousBackStackEntry
+        if (prevBackStackEntry?.destination?.route == GanadoRoutes.DASHBOARD_GANADO) {
+            mostrarDashboard.value = true
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -52,14 +64,21 @@ fun SeleccionEspeciesScreen(
                 title = { Text("Selección de Animales") },
                 navigationIcon = {
                     IconButton(onClick = { 
-                        // Navegación segura: usar popUpTo para garantizar que volvemos al Home
-                        navController.navigate(Routes.Home.route) {
-                            popUpTo(Routes.Home.route) { inclusive = false }
+                        if (mostrarDashboard.value) {
+                            // Si venimos del dashboard, volvemos a él
+                            navController.navigate(GanadoRoutes.DASHBOARD_GANADO) {
+                                popUpTo(GanadoRoutes.DASHBOARD_GANADO) { inclusive = true }
+                            }
+                        } else {
+                            // De lo contrario, volvemos al home
+                            navController.navigate(Routes.Home.route) {
+                                popUpTo(Routes.Home.route) { inclusive = false }
+                            }
                         }
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver al inicio"
+                            contentDescription = "Volver"
                         )
                     }
                 }
@@ -85,9 +104,12 @@ fun SeleccionEspeciesScreen(
                             try {
                                 // Cargar los animales filtrados primero
                                 viewModel.cargarAnimalesFiltrados()
-                                // Después navegar al dashboard de ganado en lugar de la lista
+                                // Después navegar al dashboard de ganado
                                 navController.navigate(GanadoRoutes.DASHBOARD_GANADO) {
-                                    // Configurar la navegación para evitar múltiples instancias
+                                    // Si venimos del dashboard, reemplazamos esa entrada en el backstack
+                                    if (mostrarDashboard.value) {
+                                        popUpTo(GanadoRoutes.DASHBOARD_GANADO) { inclusive = true }
+                                    }
                                     launchSingleTop = true
                                 }
                             } catch (e: Exception) {

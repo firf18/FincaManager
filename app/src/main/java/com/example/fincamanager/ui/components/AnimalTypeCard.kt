@@ -66,7 +66,7 @@ fun AnimalTypeCard(
                 painter = painterResource(id = imageResource),
                 contentDescription = animalType,
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(64.dp)
                     .padding(bottom = 8.dp),
                 tint = PrimaryGreen
             )
@@ -83,7 +83,7 @@ fun AnimalTypeCard(
             // Texto adicional
             Text(
                 text = "Gestionar",
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 color = PrimaryGreen,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 4.dp)
