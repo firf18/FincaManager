@@ -659,7 +659,7 @@ class GanadoViewModel @Inject constructor(
 
     // Configurar el filtro de especie activo
     fun setFiltroEspecie(especie: String) {
-        _filtroEspecie.value = especie
+        _filtroEspecie.value = if (especie.isEmpty()) null else especie
     }
 
     // Cargar animales filtrados por especies seleccionadas

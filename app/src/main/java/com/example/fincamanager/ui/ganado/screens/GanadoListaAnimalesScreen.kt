@@ -49,6 +49,9 @@ fun GanadoListaAnimalesScreen(
     // Colectar el estado de la lista de animales
     val animalesState by viewModel.animalesState.collectAsState()
     
+    // Obtener la especie actual seleccionada para filtrar
+    val filtroEspecie by viewModel.filtroEspecie.collectAsState()
+    
     // Colectar el mensaje de operación
     val mensajeOperacion by viewModel.mensajeOperacion.collectAsState()
     
@@ -96,6 +99,11 @@ fun GanadoListaAnimalesScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = { 
                 try {
+                    // Crear una copia del animal con la especie actual si existe
+                    filtroEspecie?.let { especie ->
+                        viewModel.limpiarFormularioAnimal()
+                        viewModel.actualizarCampoFormularioAnimal("especie", especie)
+                    }
                     onNavigateToFormularioAnimal()
                 } catch (e: Exception) {
                     Log.e("FincaManager", "Error al navegar al formulario de animal", e)
@@ -114,6 +122,31 @@ fun GanadoListaAnimalesScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            // Indicador de especie filtrada
+            filtroEspecie?.let { especie ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Especie filtrada: $especie",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    TextButton(
+                        onClick = {
+                            viewModel.setFiltroEspecie("")
+                            viewModel.cargarAnimales()
+                        }
+                    ) {
+                        Text("Quitar filtro")
+                    }
+                }
+            }
+            
             // Barra de búsqueda
             OutlinedTextField(
                 value = searchQuery,

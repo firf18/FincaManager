@@ -29,6 +29,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.fincamanager.navigation.GanadoRoutes
 import com.example.fincamanager.navigation.Routes
 import com.example.fincamanager.ui.auth.LoginScreen
@@ -193,28 +195,40 @@ fun MainAppContent() {
                 val animalId = backStackEntry.arguments?.getString("animalId") ?: ""
                 Log.d("FincaManager", "Navegando a AnimalDetalleScreen con ID: $animalId")
                 FincaManagerTheme {
-                    // Error de pantalla genérico para cuando no exista la pantalla AnimalDetalleScreen
-                    // o si hay errores al cargarla - remover después de implementar AnimalDetalleScreen
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Column(
-                            modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Detalles del animal con ID: $animalId",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Esta pantalla está en desarrollo",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Button(onClick = { navController.popBackStack() }) {
-                                Text("Volver")
-                            }
+                    AnimalDetalleScreen(
+                        navController = navController,
+                        animalId = animalId,
+                        onNavigateToEditar = { id ->
+                            navController.navigate(GanadoRoutes.formularioAnimal(id))
+                        },
+                        onNavigateToRegistrosSanitarios = { id ->
+                            navController.navigate(GanadoRoutes.registrosSanitarios(id))
+                        },
+                        onNavigateToProduccionLeche = { id ->
+                            navController.navigate(GanadoRoutes.produccionLeche(id))
+                        },
+                        onNavigateToRegistrosReproduccion = { id ->
+                            navController.navigate(GanadoRoutes.registrosReproduccion(id))
                         }
-                    }
+                    )
+                }
+            }
+            
+            // Ruta para formulario de animal (crear o editar)
+            composable(
+                route = GanadoRoutes.FORMULARIO_ANIMAL,
+                arguments = listOf(navArgument("animalId") { 
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                })
+            ) { backStackEntry ->
+                val animalId = backStackEntry.arguments?.getString("animalId")
+                FincaManagerTheme {
+                    AnimalFormularioScreen(
+                        navController = navController,
+                        animalId = animalId
+                    )
                 }
             }
 
