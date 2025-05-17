@@ -72,6 +72,10 @@ class GanadoViewModel @Inject constructor(
     private val _especiesSeleccionadas = MutableStateFlow<Set<String>>(setOf())
     val especiesSeleccionadas: StateFlow<Set<String>> = _especiesSeleccionadas.asStateFlow()
 
+    // Variable para almacenar la especie seleccionada para filtrar
+    private val _filtroEspecie = MutableStateFlow<String?>(null)
+    val filtroEspecie: StateFlow<String?> = _filtroEspecie.asStateFlow()
+
     // Mensaje de operación
     private val _mensajeOperacion = MutableStateFlow<String?>(null)
     val mensajeOperacion: StateFlow<String?> = _mensajeOperacion.asStateFlow()
@@ -79,6 +83,8 @@ class GanadoViewModel @Inject constructor(
     // Inicialización
     init {
         cargarAnimales()
+        // Cargar especies seleccionadas desde DataStore
+        cargarEspeciesSeleccionadas()
     }
 
     // ---- Funciones para Animal ----
@@ -612,47 +618,77 @@ class GanadoViewModel @Inject constructor(
         getAnimalById(animalId)
     }
 
-    // Función para manejar la selección/deselección de una especie
-    fun toggleEspecieSeleccion(especie: String) {
-        val currentSelection = _especiesSeleccionadas.value.toMutableSet()
-        if (currentSelection.contains(especie)) {
-            currentSelection.remove(especie)
-        } else {
-            currentSelection.add(especie)
+    // ---- Funciones para gestión de especies ----
+
+    // Cargar especies seleccionadas desde preferencias
+    private fun cargarEspeciesSeleccionadas() {
+        viewModelScope.launch {
+            try {
+                repository.getEspeciesSeleccionadas().collect { especies ->
+                    _especiesSeleccionadas.value = especies
+                }
+            } catch (e: Exception) {
+                Log.e("GanadoViewModel", "Error cargando especies seleccionadas", e)
+            }
         }
-        _especiesSeleccionadas.value = currentSelection
     }
 
-    // Función para limpiar todas las selecciones
+    // Alternar selección de especie
+    fun toggleEspecieSeleccion(especie: String) {
+        val especiesActuales = _especiesSeleccionadas.value.toMutableSet()
+        if (especiesActuales.contains(especie)) {
+            especiesActuales.remove(especie)
+        } else {
+            especiesActuales.add(especie)
+        }
+        _especiesSeleccionadas.value = especiesActuales
+        
+        // Guardar en preferencias
+        viewModelScope.launch {
+            repository.saveEspeciesSeleccionadas(especiesActuales)
+        }
+    }
+
+    // Limpiar selección de especies
     fun limpiarEspeciesSeleccionadas() {
         _especiesSeleccionadas.value = setOf()
+        viewModelScope.launch {
+            repository.saveEspeciesSeleccionadas(setOf())
+        }
     }
 
-    // Función para cargar animales filtrados por especies seleccionadas
+    // Configurar el filtro de especie activo
+    fun setFiltroEspecie(especie: String) {
+        _filtroEspecie.value = especie
+    }
+
+    // Cargar animales filtrados por especies seleccionadas
     fun cargarAnimalesFiltrados() {
         viewModelScope.launch {
             _animalesState.value = ListaAnimalesState.Loading
             try {
-                repository.getAllAnimales()
-                    .catch { e ->
-                        _animalesState.value = ListaAnimalesState.Error(e.message ?: "Error desconocido")
-                        Log.e("GanadoViewModel", "Error cargando animales", e)
-                    }
-                    .collect { animales ->
-                        // Si hay especies seleccionadas, filtrar; si no, mostrar todos
-                        val especiesSeleccionadas = _especiesSeleccionadas.value
-                        val animalesFiltrados = if (especiesSeleccionadas.isEmpty()) {
-                            animales
-                        } else {
-                            animales.filter { animal ->
-                                especiesSeleccionadas.contains(animal.especie)
-                            }
-                        }
-                        _animalesState.value = ListaAnimalesState.Success(animalesFiltrados)
-                    }
+                val especies = _especiesSeleccionadas.value
+                
+                if (especies.isEmpty()) {
+                    // Si no hay especies seleccionadas, mostrar todos los animales
+                    cargarAnimales()
+                    return@launch
+                }
+                
+                // Si hay un filtro activo por especie específica, aplicarlo
+                val filtroEspecie = _filtroEspecie.value
+                
+                repository.getAnimalesFiltrados(
+                    especies = if (filtroEspecie != null) setOf(filtroEspecie) else especies
+                ).catch { e ->
+                    _animalesState.value = ListaAnimalesState.Error(e.message ?: "Error desconocido")
+                    Log.e("GanadoViewModel", "Error cargando animales filtrados", e)
+                }.collect { animales ->
+                    _animalesState.value = ListaAnimalesState.Success(animales)
+                }
             } catch (e: Exception) {
                 _animalesState.value = ListaAnimalesState.Error(e.message ?: "Error desconocido")
-                Log.e("GanadoViewModel", "Error cargando animales", e)
+                Log.e("GanadoViewModel", "Error cargando animales filtrados", e)
             }
         }
     }

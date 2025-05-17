@@ -166,6 +166,12 @@ fun MainAppContent() {
                 FincaManagerTheme { SeleccionEspeciesScreen(navController = navController) }
             }
 
+            // Dashboard de Ganado - Nueva pantalla
+            composable(GanadoRoutes.DASHBOARD_GANADO) {
+                Log.d("FincaManager", "Navegando a GanadoDashboardScreen")
+                FincaManagerTheme { GanadoDashboardScreen(navController = navController) }
+            }
+
             // Rutas adicionales del módulo de ganado
             composable(GanadoRoutes.LISTA_ANIMALES) {
                 Log.d("FincaManager", "Navegando a GanadoListaAnimalesScreen")

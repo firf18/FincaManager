@@ -50,6 +50,10 @@ interface AnimalDao {
     @Query("SELECT * FROM animales WHERE especie = :especie ORDER BY fechaActualizacion DESC")
     fun getAnimalesByEspecie(especie: String): Flow<List<Animal>>
     
+    // Obtener animales por lista de especies
+    @Query("SELECT * FROM animales WHERE especie IN (:especies) ORDER BY fechaActualizacion DESC")
+    fun getAnimalesByEspecies(especies: Set<String>): Flow<List<Animal>>
+    
     // Buscar animales por nombre o identificación
     @Query("SELECT * FROM animales WHERE nombre LIKE '%' || :query || '%' OR identificacion LIKE '%' || :query || '%' ORDER BY fechaActualizacion DESC")
     fun searchAnimales(query: String): Flow<List<Animal>>

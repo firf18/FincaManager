@@ -1,6 +1,6 @@
 package com.example.fincamanager.data.repository
 
-import com.example.fincamanager.data.local.dao.AnimalDao
+import com.example.fincamanager.data.local.GanadoManager
 import com.example.fincamanager.data.local.dao.ProduccionLecheDao
 import com.example.fincamanager.data.local.dao.RegistroReproduccionDao
 import com.example.fincamanager.data.local.dao.RegistroSanitarioDao
@@ -21,7 +21,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class GanadoRepository @Inject constructor(
-    private val animalDao: AnimalDao,
+    private val ganadoManager: GanadoManager,
     private val registroSanitarioDao: RegistroSanitarioDao,
     private val produccionLecheDao: ProduccionLecheDao,
     private val registroReproduccionDao: RegistroReproduccionDao,
@@ -36,36 +36,36 @@ class GanadoRepository @Inject constructor(
     // ---- Métodos para Animal ----
 
     // Obtener todos los animales
-    fun getAllAnimales(): Flow<List<Animal>> = animalDao.getAllAnimales()
+    fun getAllAnimales(): Flow<List<Animal>> = ganadoManager.getAllAnimales()
 
     // Obtener animal por ID
-    fun getAnimalById(animalId: String): Flow<Animal?> = animalDao.getAnimalById(animalId)
+    fun getAnimalById(animalId: String): Flow<Animal?> = ganadoManager.getAnimalById(animalId)
 
     // Obtener animales por estado
-    fun getAnimalesByEstado(estado: EstadoAnimal): Flow<List<Animal>> = animalDao.getAnimalesByEstado(estado)
+    fun getAnimalesByEstado(estado: EstadoAnimal): Flow<List<Animal>> = ganadoManager.getAnimalesByEstado(estado)
 
     // Obtener animales por especie
-    fun getAnimalesByEspecie(especie: String): Flow<List<Animal>> = animalDao.getAnimalesByEspecie(especie)
+    fun getAnimalesByEspecie(especie: String): Flow<List<Animal>> = ganadoManager.getAnimalesByEspecie(especie)
 
     // Buscar animales
-    fun searchAnimales(query: String): Flow<List<Animal>> = animalDao.searchAnimales(query)
+    fun searchAnimales(query: String): Flow<List<Animal>> = ganadoManager.searchAnimales(query)
 
     // Contar animales por especie
-    fun countAnimalesByEspecie(especie: String): Flow<Int> = animalDao.countAnimalesByEspecie(especie)
+    fun countAnimalesByEspecie(especie: String): Flow<Int> = ganadoManager.countAnimalesByEspecie(especie)
 
     // Contar animales por estado
-    fun countAnimalesByEstado(estado: EstadoAnimal): Flow<Int> = animalDao.countAnimalesByEstado(estado)
+    fun countAnimalesByEstado(estado: EstadoAnimal): Flow<Int> = ganadoManager.countAnimalesByEstado(estado)
 
     // Guardar un animal (local y en la nube)
     suspend fun saveAnimal(animal: Animal): String {
         // Guardar en la base de datos local
-        animalDao.insertAnimal(animal)
+        ganadoManager.insertAnimal(animal)
 
         // Guardar en Firestore
         try {
             animalesCollection.document(animal.id).set(animal).await()
             // Marcar como sincronizado
-            animalDao.markAnimalesAsSincronizados(listOf(animal.id))
+            ganadoManager.markAnimalesAsSincronizados(listOf(animal.id))
         } catch (e: Exception) {
             // Manejar error de sincronización
             // En caso de error, el animal queda guardado localmente pero no sincronizado
@@ -83,13 +83,13 @@ class GanadoRepository @Inject constructor(
         )
 
         // Actualizar en la base de datos local
-        val rowsAffected = animalDao.updateAnimal(updatedAnimal)
+        val rowsAffected = ganadoManager.updateAnimal(updatedAnimal)
 
         // Actualizar en Firestore
         try {
             animalesCollection.document(updatedAnimal.id).set(updatedAnimal).await()
             // Marcar como sincronizado
-            animalDao.markAnimalesAsSincronizados(listOf(updatedAnimal.id))
+            ganadoManager.markAnimalesAsSincronizados(listOf(updatedAnimal.id))
         } catch (e: Exception) {
             // Manejar error de sincronización
         }
@@ -100,7 +100,7 @@ class GanadoRepository @Inject constructor(
     // Eliminar un animal (local y en la nube)
     suspend fun deleteAnimal(animalId: String): Boolean {
         // Eliminar de la base de datos local
-        val rowsAffected = animalDao.deleteAnimalById(animalId)
+        val rowsAffected = ganadoManager.deleteAnimalById(animalId)
 
         // Eliminar de Firestore
         try {
@@ -303,16 +303,37 @@ class GanadoRepository @Inject constructor(
         return rowsAffected > 0
     }
 
+    // ---- Métodos para gestión de especies seleccionadas ----
+
+    // Obtener especies seleccionadas desde DataStore
+    fun getEspeciesSeleccionadas(): Flow<Set<String>> {
+        return ganadoManager.getEspeciesSeleccionadas()
+    }
+
+    // Guardar especies seleccionadas en DataStore
+    suspend fun saveEspeciesSeleccionadas(especies: Set<String>) {
+        ganadoManager.saveEspeciesSeleccionadas(especies)
+    }
+
+    // Obtener animales filtrados por especies
+    fun getAnimalesFiltrados(especies: Set<String>): Flow<List<Animal>> {
+        return if (especies.isEmpty()) {
+            getAllAnimales()
+        } else {
+            ganadoManager.getAnimalesByEspecies(especies)
+        }
+    }
+
     // ---- Métodos de sincronización ----
 
     // Sincronizar datos locales con Firestore
     suspend fun syncLocalDataToFirestore() {
         // Sincronizar animales no sincronizados
-        animalDao.getUnsyncedAnimales().collect { animales ->
+        ganadoManager.getUnsyncedAnimales().collect { animales ->
             for (animal in animales) {
                 try {
                     animalesCollection.document(animal.id).set(animal).await()
-                    animalDao.markAnimalesAsSincronizados(listOf(animal.id))
+                    ganadoManager.markAnimalesAsSincronizados(listOf(animal.id))
                 } catch (e: Exception) {
                     // Manejar error de sincronización
                 }

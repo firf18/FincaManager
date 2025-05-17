@@ -85,8 +85,8 @@ fun SeleccionEspeciesScreen(
                             try {
                                 // Cargar los animales filtrados primero
                                 viewModel.cargarAnimalesFiltrados()
-                                // Después navegar a la lista de animales
-                                navController.navigate(GanadoRoutes.LISTA_ANIMALES) {
+                                // Después navegar al dashboard de ganado en lugar de la lista
+                                navController.navigate(GanadoRoutes.DASHBOARD_GANADO) {
                                     // Configurar la navegación para evitar múltiples instancias
                                     launchSingleTop = true
                                 }

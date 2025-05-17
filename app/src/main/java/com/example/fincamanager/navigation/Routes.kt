@@ -20,6 +20,7 @@ sealed class Routes(val route: String) {
 // Rutas para el módulo de ganado
 object GanadoRoutes {
     const val SELECCION_ESPECIES = "ganado/especies"
+    const val DASHBOARD_GANADO = "ganado/dashboard"
     const val LISTA_ANIMALES = "ganado/lista"
     const val DETALLE_ANIMAL = "ganado/animal/{animalId}"
     const val FORMULARIO_ANIMAL = "ganado/animal/edit?animalId={animalId}"

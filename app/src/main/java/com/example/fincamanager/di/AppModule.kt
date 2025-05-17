@@ -3,10 +3,13 @@ package com.example.fincamanager.di
 import android.content.Context
 import androidx.room.Room
 import com.example.fincamanager.data.local.AppDatabase
+import com.example.fincamanager.data.local.GanadoManager
+import com.example.fincamanager.data.local.GanadoManagerImpl
 import com.example.fincamanager.data.local.dao.AnimalDao
 import com.example.fincamanager.data.local.dao.ProduccionLecheDao
 import com.example.fincamanager.data.local.dao.RegistroReproduccionDao
 import com.example.fincamanager.data.local.dao.RegistroSanitarioDao
+import com.example.fincamanager.data.local.datastore.DataStoreManager
 import com.example.fincamanager.data.repository.GanadoRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -40,6 +43,18 @@ object AppModule {
     @Singleton
     fun provideAnimalDao(database: AppDatabase): AnimalDao {
         return database.animalDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager {
+        return DataStoreManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGanadoManager(animalDao: AnimalDao, dataStoreManager: DataStoreManager): GanadoManager {
+        return GanadoManagerImpl(animalDao, dataStoreManager)
     }
 
     @Provides
